@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreLocation
+import Alamofire
+import SwiftyJSON
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
@@ -50,8 +52,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     }
     
     func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
-        // implement whatever you wanna do
-        print(beacons)
+        var items: Array<NSDictionary> = Array()
+        for beacon in beacons {
+            let proximity: Int
+            switch beacon.proximity {
+            case .Far:
+                proximity = 3
+            case .Near:
+                proximity = 2
+            case .Immediate:
+                proximity = 1
+            case .Unknown:
+                proximity = 0
+            }
+            let item: NSDictionary = [
+                "major": beacon.major.integerValue,
+                "minor": beacon.minor.integerValue,
+                "rssi": beacon.rssi,
+                "region": beacon.proximityUUID.UUIDString,
+                "proximity": proximity
+            ]
+            items.append(item)
+        }
+        let parameters: JSON = [
+            "beacons": items,
+        ]
+        
+        Alamofire
+            .request(.POST, "https://www.exmaple.com/beacons", parameters: parameters.dictionaryObject)
+            .validate(statusCode: 200...200)
+            .response { req, res, data, err in
+                if err != nil {
+                    print(err)
+                }
+            }
     }
 
 }
