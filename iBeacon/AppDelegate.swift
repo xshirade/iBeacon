@@ -83,7 +83,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         ]
         
         Alamofire
-            .request(.POST, "https://www.exmaple.com/beacons", headers: headers, parameters: parameters.dictionaryObject)
+            .request(.POST, "https://www.exmaple.com/beacons", headers: headers, parameters: parameters.dictionaryObject, encoding: .JSON)
             .validate(statusCode: 200...200)
             .response { req, res, data, err in
                 if err != nil {
