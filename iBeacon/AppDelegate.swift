@@ -77,9 +77,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         let parameters: JSON = [
             "beacons": items,
         ]
+
+        let headers = [
+            "Authorization": "Bearer "
+        ]
         
         Alamofire
-            .request(.POST, "https://www.exmaple.com/beacons", parameters: parameters.dictionaryObject)
+            .request(.POST, "https://www.exmaple.com/beacons", headers: headers, parameters: parameters.dictionaryObject)
             .validate(statusCode: 200...200)
             .response { req, res, data, err in
                 if err != nil {
